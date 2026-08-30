@@ -3,7 +3,7 @@ use std::io::{self, Read};
 
 use crate::utils;
 
-pub fn read_header(file: &mut File) -> io::Result<u64> {
+pub fn read_header(file: &mut File) -> io::Result<(u64, u64)> {
     let mut magic: [u8; 4] = [0; 4];
     file.read_exact(&mut magic)?;
     let magic_text: &str = std::str::from_utf8(&magic)
@@ -19,5 +19,5 @@ pub fn read_header(file: &mut File) -> io::Result<u64> {
     let metadata_count: u64 = utils::read_u64(file)?;
     println!("[read_header]Metadata count: {}", metadata_count);
 
-    Ok(metadata_count)
+    Ok((tensor_count, metadata_count))
 }

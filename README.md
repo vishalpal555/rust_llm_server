@@ -1,4 +1,4 @@
-## GGUF structure
+# GGUF structure
 
 GGUF
 ├── Header
@@ -32,10 +32,20 @@ GGUF
 | 11 | Int64   | 8 bytes |
 | 12 | Float64 | 8 bytes |
 
+### Array Type (ID 9)
+
+Arrays are variable-length collections of elements with the same type.
+
+**Structure:**
+Array:
+├── Element Type: u32 (type ID of array elements)
+├── Array Size: u64 (number of elements)
+└── Elements: [element_type; array_size]
+
 An array of 3 UInt32 values:
 - Element Type: 4 (UInt32)
 - Array Size: 3
 - Elements: [100, 200, 300]
 
-## Usage
+# Usage
 GGUF_LOC_KEY=/path/to/model.gguf cargo run
