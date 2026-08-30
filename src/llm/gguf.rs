@@ -1,25 +1,12 @@
 use std::fs::File;
-use std::io::{self, Read};
+use std::io;
 
-use crate::utility;
+use crate::llm::header;
+use crate::llm::metadata;
 
-pub fn read(file_name: &str) -> Result<(), io::Error> {
+pub fn connect_llm(file_name: &str) -> io::Result<()> {
     let mut file: File = File::open(file_name)?;
-
-    let mut magic: [u8; 4] = [0; 4];
-    file.read_exact(&mut magic)?;
-    let magic_text: &str = std::str::from_utf8(&magic)
-        .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?;
-    println!("Magic: {magic_text}");
-
-    let version: u32 = utility::read_u32(&mut file)?;
-    println!("Version: {}", version);
-
-    let tensor_count: u64 = utility::read_u64(&mut file)?;
-    println!("Tensor count: {}", tensor_count);
-
-    let metadata_count: u64 = utility::read_u64(&mut file)?;
-    println!("Metadata count: {}", metadata_count);
-    
+    let metadata_count = header::read_header(&mut file)?;
+    metadata::read_meatadata(&mut file, metadata_count)?;
     Ok(())
 }

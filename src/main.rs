@@ -1,11 +1,21 @@
+use std::env;
+
 use axum::{routing::get, Router};
 use tokio::net::TcpListener;
 
+mod constants;
 mod llm;
-mod utility;
+mod utils;
+mod types;
 
 #[tokio::main]
 async fn main() {
+    let file_name: String = env::var(constants::GGUF_LOC_KEY)
+                                .unwrap_or_else(|_| {
+                                    eprintln!("Error: GGUF_LOC_KEY not set");
+                                    std::process::exit(-1);
+                                });
+
     let app: Router = Router::new()
         .route("/health", get(health));
 
@@ -13,7 +23,7 @@ async fn main() {
         .await
         .unwrap();
 
-    llm::gguf::read("/Users/vishalpal/AI/mark1/model_small/Sexting-3.2-1B-Q4_K_M-imat.gguf")
+    llm::gguf::connect_llm(&file_name)
         .expect("Failed to load gguf file");
 
     println!("Server running on http://localhost:3000");

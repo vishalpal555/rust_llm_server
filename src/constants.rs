@@ -1,0 +1,1 @@
+pub const GGUF_LOC_KEY: &str = "GGUF_LOC";
