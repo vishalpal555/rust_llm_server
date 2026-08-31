@@ -12,6 +12,12 @@ GGUF
 │ ├── Value Type: u32 (0-12)
 │ └── Value: depends on type
 ├── Tensor Information
+│   ├── Name_Length: u64
+│   ├── Name: [u8; Name_Length] (string)
+│   ├── N Dimensions: u32
+│   ├── Dimensions: [u64; n_dimensions]
+│   ├── Tensor Type: u32
+│   └── Offset: u64
 └── Tensor Data
 
 ## Supported Value Types

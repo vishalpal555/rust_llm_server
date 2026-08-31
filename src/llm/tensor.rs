@@ -1,8 +1,17 @@
-use std::{fs::File, io};
+use std::{fs::File, io::{self, Seek}};
 
-use crate::utils;
+use crate::{constants, utils};
 
-pub fn read_tensor(file: &mut File, tensor_count: u64) -> io::Result<()> {
+#[derive(Debug)]
+pub struct TensorInfo {
+    pub name: String,
+    pub dimensions: Vec<u64>,
+    pub tensor_type: u32,
+    pub offset: u64,
+}
+
+pub fn read_tensor_info(file: &mut File, tensor_count: usize) -> io::Result<Vec<TensorInfo>> {
+    let mut tensors = Vec::with_capacity(tensor_count);
     for _ in 0..tensor_count {
         let name = utils::read_string(file)?;
 
@@ -17,15 +26,22 @@ pub fn read_tensor(file: &mut File, tensor_count: u64) -> io::Result<()> {
         let tensor_type = utils::read_u32(file)?;
         let offset = utils::read_u64(file)?;
 
-        println!("
-        {{  name: {name},
-            n_dimensions: {},
-            dimensions: {:?},
-            tensor_type: {},
-            offset: {}
-        }},", n_dimensions, dimensions, tensor_type, offset,);
-
-        // store TensorInfo
+        tensors.push(TensorInfo { 
+            name, 
+            dimensions, 
+            tensor_type, 
+            offset 
+        });
     }
+    Ok((tensors))
+}
+
+pub fn read_tensor_data(file: &mut File, general_alignment: u64) -> io::Result<()> {
+    let current_pos = file.stream_position()?;
+
+    let tensor_data_start = (current_pos + general_alignment - 1) /
+        general_alignment * general_alignment;
+
+    println!("Tensor data starts at: {}", tensor_data_start);
     Ok(())
 }

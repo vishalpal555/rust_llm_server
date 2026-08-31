@@ -4,33 +4,25 @@ use std::io::{self, Read};
 
 use crate::utils::{self, read_u32, read_u64};
 
-/*
- metadata entry
-│
-├── key length      u64
-├── key bytes       [u8; key_length]
-│
-├── value type      u32
-│
-└── value           depends on value type
- */
-
-pub fn read_meatadata(file: &mut File, metadata_count: u64) -> io::Result<()> {
-    let mut last_element_processed: u64 = 0;
-    for i in 0..metadata_count {
+pub fn read_meatadata(file: &mut File, metadata_count: u64) -> io::Result<(u64)> {
+    let mut general_alignment: u64 = 32;
+    for _ in 0..metadata_count {
         let key = utils::read_string(file)?;
         
         let value_type: u32 = utils::read_u32(file)?;
+
+        if key.eq("general.alignment") && value_type == 10 {
+            general_alignment = read_u64(file)?;
+            continue;
+        }
         
         let value = read_value(file, value_type)?;
         if value_type != 9 { // for now ignoring large array print
             println!("[read_meatadata]{key}: {value} ---> {value_type}");
         }
-        last_element_processed = i + 1;
     }
 
-    println!("[read_meatadata] completed {} elements", last_element_processed);
-    Ok(())
+    Ok((general_alignment))
 }
 
 fn read_value(file: &mut File, value_type: u32) -> io::Result<String> {
