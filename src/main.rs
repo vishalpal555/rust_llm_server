@@ -11,7 +11,7 @@ mod utils;
 async fn main() {
     let file_name: String = env::var(constants::GGUF_LOC_KEY)
                                 .unwrap_or_else(|_| {
-                                    eprintln!("Error: GGUF_LOC_KEY not set");
+                                    eprintln!("Error: GGUF_LOC not set");
                                     std::process::exit(-1);
                                 });
 

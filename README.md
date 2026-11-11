@@ -1,24 +1,35 @@
 # GGUF structure
 
 GGUF
+|
 ├── Header
-│ ├── Magic: "GGUF" (4 bytes)
-│ ├── Version: u32 (little-endian)
-│ ├── Tensor Count: u64
-│ └── Metadata Count: u64
+│   ├── Magic: "GGUF" (4 bytes)
+│   ├── Version: u32 (little-endian)
+│   ├── Tensor Count: u64
+│   └── Metadata Count: u64
+|
 ├── Metadata
-│ ├── Key Length: u64
-│ ├── Key: [u8; key_length]
-│ ├── Value Type: u32 (0-12)
-│ └── Value: depends on type
+│   ├── Key Length: u64
+│   ├── Key: [u8; key_length]
+│   ├── Value Type: u32 (0-12)
+│   └── Value: depends on type
+|
 ├── Tensor Information
-│   ├── Name_Length: u64
-│   ├── Name: [u8; Name_Length] (string)
-│   ├── N Dimensions: u32
-│   ├── Dimensions: [u64; n_dimensions]
-│   ├── Tensor Type: u32
-│   └── Offset: u64
+|   ├── Tensor 0
+│   |   ├── Name_Length: u64
+│   |   ├── Name: [u8; Name_Length] (string)
+│   |   ├── N Dimensions: u32
+│   |   ├── Dimensions: [u64; n_dimensions]
+│   |   ├── Tensor Type: u32
+│   |   └── Offset: u64
+|   |
+|   └── Tensor n...
+|
 └── Tensor Data
+    ├── tensor 0 data
+    ├── tensor 1 data
+    ├── tensor 2 data
+    └── ...
 
 ## Supported Value Types
 

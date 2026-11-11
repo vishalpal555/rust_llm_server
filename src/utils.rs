@@ -21,3 +21,7 @@ pub fn read_string(file: &mut File) -> io::Result<String> {
 
     Ok(String::from_utf8_lossy(&data).into_owned())
 }
+
+trait Dequantize {
+    fn dequantize(&self, input: &[u8]) -> Vec<f32>;
+}
